@@ -11,7 +11,7 @@
 
 <script>
 
-import mapStatesUSA from '@/assets/us-states-geo.json';
+//import mapStatesUSA from '@/assets/us-states-geo.json';
 
 export default {
   name: 'ChoroplethMap',
@@ -28,7 +28,7 @@ export default {
   },
   mounted() {
     // Use the following map geoJSON object ("mapStatesUSA") for your projection
-    console.log(mapStatesUSA);
+    //console.log(mapStatesUSA);
   },
   methods: {
   },
