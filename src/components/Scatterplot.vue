@@ -11,8 +11,8 @@
         <g class="bivariate-palette" ref="bivariatePalette"></g>
         <g class="axis axis-x" ref="xAxis"></g>
         <g class="axis axis-y" ref="yAxis"></g>
-        <g class="points-group" ref="pointsGroup"></g>
         <g class="brush-area" ref="brushArea"></g>
+        <g class="points-group" ref="pointsGroup"></g>
       </g>
     </svg>
   </div>
