@@ -1,10 +1,7 @@
 <template>
   <div class="vis-component" ref="chart">
-    <div class="placeholder">
-      <b>Here comes the choropleth map</b>.
-      <p>Selected states by clicking on the bar chart: {{ selectedStates }}</p>
-    </div>
     <svg class="main-svg" :width="svgWidth" :height="svgHeight">
+      <g class="choropleth-map" ref="choroplethMap"></g>
     </svg>
   </div>
 </template>
@@ -19,18 +16,23 @@ export default {
   },
   data() {
     return {
-      svgWidth: 750,
-      svgHeight: 750,
+      svgWidth: 500,
+      svgHeight: 500,
       svgPadding: {
-        top: 20, right: 20, bottom: 20, left: 20,
+        top: 40, right: 40, bottom: 40, left: 40,
       },
     }
   },
   mounted() {
-    // Use the following map geoJSON object ("mapStatesUSA") for your projection
-    //console.log(mapStatesUSA);
+    /*
+    this.createMap();
+    */
   },
   methods: {
+    // createMap() {
+
+    // },
+    
   },
   computed: {
     educationRates: {

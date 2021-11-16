@@ -33,17 +33,13 @@ export default {
         top: 40, right: 40, bottom: 40, left: 40,
       },
       mounted: false,
-      paletteColors: [
-        "#e8e8e8", "#e4acac", "#c85a5a",
-        "#b0d5df", "#ad9ea5", "#985356",
-        "#64acbe", "#627f8c", "#574249"
-      ]
     }
   },
   mounted() {
     this.createChart();
     this.mounted = true;
     this.createBrush();
+    console.log(this.paletteColors)
     d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
   },
   methods: {
@@ -159,6 +155,11 @@ export default {
           }
         });
       },
+    },
+    paletteColors: {
+      get() {
+        return this.$store.getters.selectedPalette;
+      }
     },
     // To avoid having to watch two properties individually 
     dataChart: {

@@ -10,6 +10,11 @@ const store = new Vuex.Store({
     selectedStates: [],
     educationRates: [],
     personalIncome: [],
+    paletteColors: [
+      "#e8e8e8", "#e4acac", "#c85a5a",
+      "#b0d5df", "#ad9ea5", "#985356",
+      "#64acbe", "#627f8c", "#574249"
+    ]
   },
   mutations: {
     changeSelectedYear (state, year) {
@@ -22,6 +27,7 @@ const store = new Vuex.Store({
   getters: {
     selectedYear: (state) => state.selectedYear,
     selectedStates: (state) => state.selectedStates,
+    selectedPalette: (state) => state.paletteColors,
     educationRates (state) {
       let result = [];
       for (let i = 0; i < state.educationRates.length; i++) {
@@ -40,7 +46,7 @@ const store = new Vuex.Store({
         if (state.selectedYear in state.personalIncome[i]) {
           result.push({
             state: state.personalIncome[i].State,
-            value: +state.personalIncome[i][state.selectedYear]
+            value: state.personalIncome[i][state.selectedYear]
           })
         }
       }
