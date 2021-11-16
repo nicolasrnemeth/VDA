@@ -42,6 +42,7 @@ export default {
   mounted() {
     this.createChart();
     this.mounted = true;
+    console.log(this.allData);
     //d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
   },
   methods: {
@@ -54,7 +55,7 @@ export default {
         .attr("transform", `translate(${this.svgPadding.left}, ${this.svgPadding.top})`);
       this.createXAxis();
       this.createYAxis();
-      this.createPoints();
+      //this.createPoints();
       this.createPalette();
     },
     createXAxis() {
@@ -139,20 +140,15 @@ export default {
     },
     allData: {
       get() {
-        //let result = 
-        let result = [];
-        for (let i = 0; i < this.personalIncome.length; i++) {
-          let stateName = this.personalIncome[i].state;
-          result.push({
-            state: stateName,
-            income: this.personalIncome[i].value,
-            eduRate: this.educationRates.filter(d => d.state == stateName)[0].value,
-          })
-        }
-      return result;
+        return this.personalIncome.map(obj => {
+          return {
+            ...obj,
+            eduRate : this.educationRates.find(d => d.state == obj.state).value,
+          }
+        });
       },
     },
-    // To avoid having to watch two properties individually
+    // To avoid having to watch two properties individually 
     dataChart: {
       get() {
         return `${this.personalIncome},${this.educationRates}`;
