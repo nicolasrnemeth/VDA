@@ -6,13 +6,12 @@
       <p>Education Attainment Rate for the Selected Year: {{ educationRates }}</p>
     </div>
     -->
-    <svg class="main-svg" :width="svgWidth" :height="svgHeight">
+    <svg class="main-svg" :width="svgWidth" :height="svgHeight" ref="mainSvg">
       <g class="chart-group" ref="chartGroup">
+        <g class="bivariate-palette" ref="bivariatePalette"></g>
         <g class="axis axis-x" ref="xAxis"></g>
         <g class="axis axis-y" ref="yAxis"></g>
-        <g class="points-group" ref="pointsGroup">
-          <g class="bg-rect" ref="bgRect"></g> <!-- colored BG rectangles -->
-        </g> 
+        <g class="points-group" ref="pointsGroup"></g> 
       </g>
     </svg>
   </div>
@@ -27,13 +26,13 @@ export default {
   },
   data() {
     return {
-      svgWidth: 0,
+      svgWidth: 500,
       svgHeight: 500,
       svgPadding: {
-        top: 25, right: 20, bottom: 70, left: 40,
+        top: 40, right: 40, bottom: 40, left: 40,
       },
       mounted: false,
-      rectColors: [
+      paletteColors: [
         "#e8e8e8", "#e4acac", "#c85a5a",
         "#b0d5df", "#ad9ea5", "#985356",
         "#64acbe", "#627f8c", "#574249"
@@ -43,15 +42,20 @@ export default {
   mounted() {
     this.createChart();
     this.mounted = true;
+    //d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
   },
   methods: {
     createChart() {
-      if (this.$refs.chart) this.svgWidth = this.$refs.chart.clientWidth;
+      if (this.$refs.chart) {
+        this.svgWidth = this.$refs.chart.clientWidth;
+        this.svgHeight = this.svgWidth;
+      }
       d3.select(this.$refs.chartGroup)
         .attr("transform", `translate(${this.svgPadding.left}, ${this.svgPadding.top})`);
       this.createXAxis();
       this.createYAxis();
       this.createPoints();
+      this.createPalette();
     },
     createXAxis() {
       let XAxis = d3.select(this.$refs.xAxis)
@@ -63,7 +67,8 @@ export default {
              .attr('dy', '-.75em')
              .style('fill', 'black')
              .style('text-anchor', 'end')
-             .text("Educational Attainment: Bachelor's Degree or Higher (%)");
+             .text("Educational Attainment: Bachelor's Degree or Higher (%)")
+             .style('font-weight', 'bold');
       }
     },
     createYAxis() {
@@ -75,7 +80,8 @@ export default {
              .attr('transform', 'rotate(-90)')
              .attr('dy', '1.5em')
              .style('text-anchor', 'end')
-             .style('fill', 'black');
+             .style('fill', 'black')
+             .style('font-weight', 'bold');
       }
     },
     createPoints() {
@@ -91,13 +97,34 @@ export default {
                  .style('stroke', 'black')
                  .style('stroke-width', 1.2);
     },
-    bgRects() {
-      const bgRects = d3.select(this.$refs.bgRect)
-      bgRects.selectAll('.colRects')
-            .data(this.rectColors)
-            .join('rect')
-            .attr('class', 'colRects')
-    }
+    createPalette() {
+      const palette = d3.select(this.$refs.bivariatePalette)
+      const plot_width = this.svgWidth - this.svgPadding.left - this.svgPadding.right;
+      const plot_height = this.svgHeight - this.svgPadding.top - this.svgPadding.bottom;
+      const rect_width = plot_width / 3;
+      const rect_height = plot_height / 3;
+      palette.selectAll('.palette-rect')
+             .data(this.paletteColors)
+             .join('rect')
+             .attr('class', 'palette-rect')
+             .attr('width', rect_width)
+             .attr('height', rect_height)
+             .attr('x',  (d,i) => (i%3)*rect_width)
+             .attr('y', (d,i) => {
+               if(i < 3) return 2*rect_height;
+               if (i < 6) return 1*rect_height;
+               return 0
+             })
+             .style('fill', d => d)
+             .style('stroke', 'black')
+             .style('stroke-width', 0.2)
+    },
+    roundUpToMultipleOfX(value, x, factor=1.05) {
+      return Math.ceil( (factor * value) / x) * x;
+    },
+    roundDownToMultipleOfX(value, x, factor=0.95) {
+      return Math.floor( (factor * value) / x) * x;
+    },
   },
   computed: {
     educationRates: {
@@ -112,6 +139,7 @@ export default {
     },
     allData: {
       get() {
+        //let result = 
         let result = [];
         for (let i = 0; i < this.personalIncome.length; i++) {
           let stateName = this.personalIncome[i].state;
@@ -144,12 +172,14 @@ export default {
     },
     xScale() {
       return d3.scaleLinear()
-               .domain([0.9*this.dataMin_eduRate, 1.05*this.dataMax_eduRate])
+               .domain([this.roundDownToMultipleOfX(this.dataMin_eduRate, 5), 
+                        this.roundUpToMultipleOfX(this.dataMax_eduRate, 5)])
                .range([0, this.svgWidth - this.svgPadding.left - this.svgPadding.right]);
     },
     yScale() {
       return d3.scaleLinear()
-               .domain([0.9*this.dataMin_income, 1.05*this.dataMax_income])
+               .domain([this.roundDownToMultipleOfX(this.dataMin_income, 5*1e03), 
+                        this.roundUpToMultipleOfX(this.dataMax_income, 5*1e03)])
                .range([this.svgHeight - this.svgPadding.top - this.svgPadding.bottom, 0]);
     }
   },

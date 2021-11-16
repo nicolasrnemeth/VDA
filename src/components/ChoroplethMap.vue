@@ -19,8 +19,8 @@ export default {
   },
   data() {
     return {
-      svgWidth: 500,
-      svgHeight: 500,
+      svgWidth: 750,
+      svgHeight: 750,
       svgPadding: {
         top: 20, right: 20, bottom: 20, left: 20,
       },
