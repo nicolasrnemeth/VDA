@@ -11,7 +11,8 @@
         <g class="bivariate-palette" ref="bivariatePalette"></g>
         <g class="axis axis-x" ref="xAxis"></g>
         <g class="axis axis-y" ref="yAxis"></g>
-        <g class="points-group" ref="pointsGroup"></g> 
+        <g class="points-group" ref="pointsGroup"></g>
+        <g class="brush-area" ref="brushArea"></g>
       </g>
     </svg>
   </div>
@@ -42,8 +43,8 @@ export default {
   mounted() {
     this.createChart();
     this.mounted = true;
-    console.log(this.allData);
-    //d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
+    this.createBrush();
+    d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
   },
   methods: {
     createChart() {
@@ -55,7 +56,7 @@ export default {
         .attr("transform", `translate(${this.svgPadding.left}, ${this.svgPadding.top})`);
       this.createXAxis();
       this.createYAxis();
-      //this.createPoints();
+      this.createPoints();
       this.createPalette();
     },
     createXAxis() {
@@ -96,7 +97,9 @@ export default {
                  .attr('r', 5)
                  .style('fill-opacity', 0)
                  .style('stroke', 'black')
-                 .style('stroke-width', 1.2);
+                 .style('stroke-width', 1.2)
+                 .append('title')
+                 .text(d => d.state);
     },
     createPalette() {
       const palette = d3.select(this.$refs.bivariatePalette)
@@ -120,6 +123,14 @@ export default {
              .style('stroke', 'black')
              .style('stroke-width', 0.2)
     },
+    createBrush() {
+      let brush = d3.brush()
+                    .extent([[0, 0], 
+                             [this.svgWidth - this.svgPadding.left - this.svgPadding.right,
+                              this.svgHeight - this.svgPadding.top - this.svgPadding.bottom]])
+                    .on("end", this.catchStates)
+      d3.select(this.$refs.brushArea).attr('class', 'brush').call(brush);
+    },
     roundUpToMultipleOfX(value, x, factor=1.05) {
       return Math.ceil( (factor * value) / x) * x;
     },
@@ -142,7 +153,8 @@ export default {
       get() {
         return this.personalIncome.map(obj => {
           return {
-            ...obj,
+            state: obj.state, 
+            income: obj.value,
             eduRate : this.educationRates.find(d => d.state == obj.state).value,
           }
         });
