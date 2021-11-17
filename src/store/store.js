@@ -54,7 +54,7 @@ const store = new Vuex.Store({
         if (state.selectedYear in state.personalIncome[i]) {
           result.push({
             state: state.personalIncome[i].State,
-            value: state.personalIncome[i][state.selectedYear]
+            value: +state.personalIncome[i][state.selectedYear]
           })
         }
       }

@@ -1,5 +1,5 @@
 <template>
-  <div class="vis-component" ref="chart">
+  <div class="vis-component" ref="chart" id="choroplethMap">
     <svg class="main-svg" :width="svgWidth" :height="svgHeight" ref="mainSvg">
       <g class="choropleth-map" ref="choroplethMap"></g>
     </svg>
@@ -26,8 +26,6 @@ export default {
   },
   mounted() {
     this.createMap()
-    d3.select(this.$refs.mainSvg)
-      .attr("transform", "translate(0,"+this.svgPadding.top+")");
   },
   methods: {
     createMap() {
