@@ -38,18 +38,15 @@ export default {
       let path_generator = d3.geoPath().projection(projection);
       let usaMap = d3.select(this.$refs.choroplethMap)
       
-      //d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.1)")
-      
       usaMap.selectAll('path')
             .data(mapStatesUSA.features)
             .join('path')
             .attr('class', 'paths')
             .attr('d', path_generator)
-            .attr('id', d => d.properties.name.replaceAll(" ", ""))
+            .attr('id', d => d.properties.name.replaceAll(" ", "")+"_path")
             .style('fill', 'white')
             .style('stroke', 'black');
     },
-
   },
   computed: {
     educationRates: {

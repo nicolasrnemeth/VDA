@@ -15,6 +15,7 @@ const store = new Vuex.Store({
       "#b0d5df", "#ad9ea5", "#985356",
       "#64acbe", "#627f8c", "#574249"
     ],
+    stateColorIndexPairs: [],
   },
   mutations: {
     changeSelectedYear (state, year) {
@@ -22,12 +23,16 @@ const store = new Vuex.Store({
     },
     changeSelectedState(state, val) {
       state.selectedStates.push(val);
-    }   
+    },
+    changeStateColorIndexPairs(state, obj) {
+      state.stateColorIndexPairs.push(obj);
+    },
   },
   getters: {
     selectedYear: (state) => state.selectedYear,
     selectedStates: (state) => state.selectedStates,
     selectedPalette: (state) => state.paletteColors,
+    selectedStateColorIndexPairs: (state) => state.stateColorIndexPairs,
     educationRates (state) {
       let result = [];
       for (let i = 0; i < state.educationRates.length; i++) {

@@ -39,9 +39,9 @@ export default {
     this.createChart();
     this.mounted = true;
     this.createBrush();
-    //d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
     d3.select(this.$refs.mainSvg)
       .attr("transform", "translate(0,"+this.svgPadding.top+")");
+    //this.colorStates();
   },
   methods: {
     createChart() {
@@ -89,6 +89,7 @@ export default {
                  .data(this.allData)
                  .join('circle')
                  .attr('class', 'points')
+                 .attr('id', d => d.state.replaceAll(" ", "")+"_point")
                  .attr('cx', d => this.xScale(d.eduRate))
                  .attr('cy', d => this.yScale(d.income))
                  .attr('r', 5)
@@ -125,15 +126,29 @@ export default {
                     .extent([[0, 0], 
                              [this.svgWidth - this.svgPadding.left - this.svgPadding.right,
                               this.svgHeight - this.svgPadding.top - this.svgPadding.bottom]])
-                    .on("end", this.catchStates)
+                    .on("end", this.catchStates);
       d3.select(this.$refs.brushArea).attr('class', 'brush').call(brush);
     },
+    // catchStates(event) {
+    //   let extent = event.selection;
+
+    // },
     roundUpToMultipleOfX(value, x, factor=1.05) {
       return Math.ceil( (factor * value) / x) * x;
     },
     roundDownToMultipleOfX(value, x, factor=0.95) {
       return Math.floor( (factor * value) / x) * x;
     },
+    colorIndex(x, y) {
+      let xRange = xScale(x);
+      let yRange = yScale(y);
+      
+    },
+    updateStateColorIndexPairs() {
+      for (let state of this.allData) {
+
+      }
+    }
   },
   computed: {
     educationRates: {
@@ -157,15 +172,14 @@ export default {
         });
       },
     },
+    setStateColorIndexPairs: {
+      set(obj) {
+        this.$store.commit('changeStateColorIndexPairs', obj);
+      }
+    },
     paletteColors: {
       get() {
         return this.$store.getters.selectedPalette;
-      }
-    },
-    // To avoid having to watch two properties individually 
-    dataChart: {
-      get() {
-        return `${this.personalIncome},${this.educationRates}`;
       }
     },
     dataMax_income() {
@@ -194,7 +208,7 @@ export default {
     }
   },
   watch: {
-    dataChart: {
+    allData: {
       handler() {
         this.createChart();
       },
