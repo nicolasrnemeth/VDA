@@ -127,11 +127,15 @@ export default {
     roundDownToMultipleOfX(value, x, factor=0.95) {
       return Math.floor( (factor * value) / x) * x;
     },
-    colorIndex(x, y) {
+    colorIndex(x, y, stateid) {
       let xRange = this.xScale(x);
-      let yRange = this.yScale(y);
-      return Math.floor(yRange / this.paletteRect.height) * 3
-             + Math.floor(xRange / this.paletteRect.width)
+      let yRange = (this.svgHeight - this.svgPadding.top 
+                    - this.svgPadding.bottom - this.yScale(y));
+      console.log(stateid);
+      console.log("xRange= ", xRange);
+      console.log("yRange= ", yRange);
+      return Math.floor(yRange / this.paletteRect.height) * 3 
+             + Math.floor(xRange / this.paletteRect.width);
     },
     updateStateColorIndexPairs() {
       this.$store.commit('clearStateColorIndexPairs');
@@ -139,7 +143,7 @@ export default {
       for (let datum of this.allData) {
         this.setStateColorIndexPairs({
           id: datum.state.replaceAll(" ", "")+"_path",
-          colorIndex: this.colorIndex(datum.eduRate, datum.income),
+          colorIndex: this.colorIndex(datum.eduRate, datum.income, datum.state),
         })
       }
     },

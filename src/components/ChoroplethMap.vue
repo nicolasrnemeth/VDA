@@ -43,7 +43,9 @@ export default {
             .attr('d', path_generator)
             .attr('id', d => d.properties.name.replaceAll(" ", "")+"_path")
             .style('fill', 'white')
-            .style('stroke', 'black');
+            .style('stroke', 'black')
+            .append('title')
+            .text(d => d.properties.name);
       
       this.colorStates();
     },
