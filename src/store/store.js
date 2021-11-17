@@ -35,7 +35,7 @@ const store = new Vuex.Store({
     selectedYear: (state) => state.selectedYear,
     selectedStates: (state) => state.selectedStates,
     selectedPalette: (state) => state.paletteColors,
-    selectedStateColorIndexPairs: (state) => state.stateColorIndexPairs,
+    stateColorIndexPairs: (state) => state.stateColorIndexPairs,
     educationRates (state) {
       let result = [];
       for (let i = 0; i < state.educationRates.length; i++) {

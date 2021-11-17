@@ -31,8 +31,9 @@ export default {
   },
   mounted() {
     this.createChart();
-    this.mounted = true;
+    this.updateStateColorIndexPairs();
     this.createBrush();
+    this.mounted = true;
   },
   methods: {
     createChart() {
@@ -141,6 +142,9 @@ export default {
           colorIndex: this.colorIndex(datum.eduRate, datum.income),
         })
       }
+    },
+    setStateColorIndexPairs(obj) {
+        this.$store.commit('changeStateColorIndexPairs', obj);
     },  
   },
   computed: {
@@ -171,11 +175,6 @@ export default {
           width: ((this.svgWidth - this.svgPadding.left - this.svgPadding.right) / 3), 
           height: ((this.svgHeight - this.svgPadding.top - this.svgPadding.bottom) / 3),
         }
-      }
-    },
-    setStateColorIndexPairs: {
-      set(obj) {
-        this.$store.commit('changeStateColorIndexPairs', obj);
       }
     },
     paletteColors: {
@@ -212,6 +211,7 @@ export default {
     allData: {
       handler() {
         this.createChart();
+        this.updateStateColorIndexPairs();
       },
       deep: true,
     },

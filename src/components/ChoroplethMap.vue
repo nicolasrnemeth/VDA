@@ -25,7 +25,7 @@ export default {
     }
   },
   mounted() {
-    this.createMap()
+    this.createMap();
   },
   methods: {
     createMap() {
@@ -44,7 +44,15 @@ export default {
             .attr('id', d => d.properties.name.replaceAll(" ", "")+"_path")
             .style('fill', 'white')
             .style('stroke', 'black');
+      
+      this.colorStates();
     },
+    colorStates() {
+      for (let state of this.stateColorIndexPairs) {
+        d3.select("#"+state.id)
+          .style("fill", this.selectedPalette[state.colorIndex]);
+      }
+    }
   },
   computed: {
     educationRates: {
@@ -62,8 +70,23 @@ export default {
         return this.$store.getters.selectedStates;
       }
     },
+    stateColorIndexPairs: {
+      get() {
+        return this.$store.getters.stateColorIndexPairs;
+      }
+    },
+    selectedPalette: {
+      get() {
+        return this.$store.getters.selectedPalette;
+      }
+    }
   },
   watch: {
+    stateColorIndexPairs: {
+      handler() {
+        this.colorStates();
+      },
+    },
   },
 }
 </script>
