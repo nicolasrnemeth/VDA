@@ -27,6 +27,9 @@ const store = new Vuex.Store({
     changeStateColorIndexPairs(state, obj) {
       state.stateColorIndexPairs.push(obj);
     },
+    clearStateColorIndexPairs(state) {
+      state.stateColorIndexPairs = [];
+    },
   },
   getters: {
     selectedYear: (state) => state.selectedYear,

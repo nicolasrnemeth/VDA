@@ -3,6 +3,7 @@
     <label for="range-year">Year Selection</label>
     <b-form-input id="range-year" v-model="selectedYear" type="range" min="2006" max="2019"></b-form-input>
     <div class="mt-2">Selected Year: {{ selectedYear }}</div>
+    <!-- <div class="palette-selection"></div> -->
   </div>
 </template>
 

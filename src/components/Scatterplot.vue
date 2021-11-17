@@ -33,6 +33,10 @@ export default {
         top: 40, right: 40, bottom: 40, left: 40,
       },
       mounted: false,
+      paletteRect: {
+        width: (this.svgWidth - this.svgPadding.left - this.svgPadding.right) / 3, 
+        height: (this.svgHeight - this.svgPadding.top - this.svgPadding.bottom) / 3,
+      }
     }
   },
   mounted() {
@@ -41,7 +45,6 @@ export default {
     this.createBrush();
     d3.select(this.$refs.mainSvg)
       .attr("transform", "translate(0,"+this.svgPadding.top+")");
-    //this.colorStates();
   },
   methods: {
     createChart() {
@@ -101,20 +104,16 @@ export default {
     },
     createPalette() {
       const palette = d3.select(this.$refs.bivariatePalette)
-      const plot_width = this.svgWidth - this.svgPadding.left - this.svgPadding.right;
-      const plot_height = this.svgHeight - this.svgPadding.top - this.svgPadding.bottom;
-      const rect_width = plot_width / 3;
-      const rect_height = plot_height / 3;
       palette.selectAll('.palette-rect')
              .data(this.paletteColors)
              .join('rect')
              .attr('class', 'palette-rect')
-             .attr('width', rect_width)
-             .attr('height', rect_height)
-             .attr('x',  (d,i) => (i%3)*rect_width)
+             .attr('width', this.paletteRect.width)
+             .attr('height', this.paletteRect.height)
+             .attr('x',  (d,i) => (i%3)*this.paletteRect.width)
              .attr('y', (d,i) => {
-               if(i < 3) return 2*rect_height;
-               if (i < 6) return 1*rect_height;
+               if(i < 3) return 2*this.paletteRect.height;
+               if (i < 6) return this.paletteRect.height;
                return 0
              })
              .style('fill', d => d)
@@ -139,16 +138,22 @@ export default {
     roundDownToMultipleOfX(value, x, factor=0.95) {
       return Math.floor( (factor * value) / x) * x;
     },
-    colorIndex(x, y) {
-      let xRange = xScale(x);
-      let yRange = yScale(y);
-      
-    },
-    updateStateColorIndexPairs() {
-      for (let state of this.allData) {
+    // colorIndex(x, y) {
+    //   let xRange = this.xScale(x);
+    //   let yRange = this.yScale(y);
+    //   return Math.floor(yRange / this.paletteRect.height) * 3
+    //          + Math.floor(xRange / this.paletteRect.width)
+    // },
+    // updateStateColorIndexPairs() {
+    //   this.$store.commit('clearStateColorIndexPairs');
 
-      }
-    }
+    //   for (let datum of this.allData) {
+    //     this.setStateColorIndexPairs({
+    //       id: datum.state.replaceAll(" ", "")+"_path",
+    //       colorIndex: this.colorIndex(datum.eduRate, datum.income),
+    //     })
+    //   }
+    // },  
   },
   computed: {
     educationRates: {
