@@ -39,8 +39,9 @@ export default {
     this.createChart();
     this.mounted = true;
     this.createBrush();
-    console.log(this.paletteColors)
-    d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
+    //d3.select(this.$refs.mainSvg).style("background-color", "rgba(255,0,0,0.05)");
+    d3.select(this.$refs.mainSvg)
+      .attr("transform", "translate(0,"+this.svgPadding.top+")");
   },
   methods: {
     createChart() {

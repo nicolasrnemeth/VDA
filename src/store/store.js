@@ -14,7 +14,7 @@ const store = new Vuex.Store({
       "#e8e8e8", "#e4acac", "#c85a5a",
       "#b0d5df", "#ad9ea5", "#985356",
       "#64acbe", "#627f8c", "#574249"
-    ]
+    ],
   },
   mutations: {
     changeSelectedYear (state, year) {
