@@ -21,7 +21,7 @@ export default {
       svgWidth: 570,
       svgHeight: 570,
       svgPadding: {
-        top: 40, right: 40, bottom: 40, left: 40,
+        top: 40, right: 50, bottom: 60, left: 50,
       },
     }
   },
@@ -31,7 +31,10 @@ export default {
   },
   methods: {
     createMap() {
-      if (this.$refs.chart) this.svgWidth = this.$refs.chart.clientWidth;
+      if (this.$refs.chart) {
+        this.svgWidth = this.$refs.chart.clientWidth;
+        this.svgHeight = this.scatterPlotHeight;
+      }
       let projection = d3.geoAlbersUsa()
                          .scale(this.svgWidth*1.25)
                          .translate([this.svgWidth/2*1.07,this.svgHeight/2]);
@@ -49,7 +52,7 @@ export default {
             .style('stroke', 'black')
             .style('cursor', 'pointer')
             .append('title')
-            .text(d => d.properties.name);
+            .text(d => "hightlight " + d.properties.name);
       
       this.updateColor();
     },
@@ -64,8 +67,9 @@ export default {
     },
     createEmptyArea() {
       let emptyArea = d3.select(this.$refs.emptyArea)
-      emptyArea.attr("height", this.svgHeight-79)
+      emptyArea.attr("height", this.svgHeight - this.svgPadding.top - this.svgPadding.bottom + 2)
                .attr("width", this.svgWidth)
+               .attr('y', this.svgPadding.top + 1)
                .on("click", this.handleEmptyAreaClick)
                .style('cursor', "pointer")
                .append('title')
@@ -76,19 +80,14 @@ export default {
     },
   },
   computed: {
-    colorInput: {
+    brushedStates: {
       get() {
-        return this.$store.colorInput;
+        return this.$store.getters.brushedStates;
       }
     },
-    educationRates: {
+    scatterPlotHeight: {
       get() {
-        return this.$store.getters.educationRates;
-      }
-    },
-    personalIncome: {
-      get() {
-        return this.$store.getters.personalIncome;
+        return this.$store.getters.scatterPlotHeight;
       }
     },
     selectedStates: {
@@ -119,6 +118,12 @@ export default {
       },
       deep: true,
     },
+    brushedStates: {
+      handler() {
+        this.handleBrushEvent();
+      },
+      deep: true,
+    }
   },
 }
 </script>

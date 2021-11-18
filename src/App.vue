@@ -8,7 +8,7 @@
       </div>
       <div id="color-selection" ref="colorSelection">
         <label for="colorInput">Color scheme: </label>
-        <span id="spacing">____</span>
+        <span id="spacing">___</span>
         <select name="palette" id="colorInput">
             <option>RedBlue</option>
             <option>GreenBlue</option>
@@ -58,33 +58,46 @@ export default {
 #appTitle {
   text-align: center;
   text-anchor: middle;
-  font-weight: normal;
-  font-size: 37px;
+  font-weight: bold;
+  font-family: Baskerville;
+  font-size: 32px;
 }
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: Baskerville;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
   margin-top: 20px;
   transform: translate(0px,10px);
+  padding-left: 35px;
+  padding-right: 35px;
 }
 #spacing {
   color: white;
 }
 #color-selection {
   text-align: start;
-  transform: translate(40px, 30px);
+  transform: translate(50px, 85%);
   margin-bottom: 25px;
+  font-size: 18px;
 }
 #choropleth-map {
   transform: translate(0px,-10px);
 }
 #empty-area{
-  transform: translate(0px, 31px);
   stroke: black;
   stroke-width: 0.25;
   fill: rgba(250, 250, 250, 0.75);
+}
+.axis {
+  font-size: 12px;
+}
+.year-slider {
+  font-size: 22px;
+}
+.selected {
+  fill: red !important;
+  fill-opacity: 1 !important;
 }
 </style>

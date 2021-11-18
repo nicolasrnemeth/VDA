@@ -7,7 +7,9 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     selectedYear: 2006,
+    scatterPlotHeight: 570,
     selectedStates: [],
+    brushedStates: [],
     educationRates: [],
     personalIncome: [],
     paletteColors: [
@@ -40,6 +42,9 @@ const store = new Vuex.Store({
     colorInput: "RedBlue",
   },
   mutations: {
+    changeScatterPlotHeight(state, height) {
+      state.scatterPlotHeight = height;
+    },
     changeSelectedYear(state, year) {
       state.selectedYear = year;
     },
@@ -47,6 +52,9 @@ const store = new Vuex.Store({
       if (!(state.selectedStates.includes(val))) {
         state.selectedStates.push(val);
       }
+    },
+    changeBrushedState(state, val) {
+      state.brushedStates.push(val);
     },
     clearSelectedState(state) {
       state.selectedStates = [];
@@ -64,6 +72,8 @@ const store = new Vuex.Store({
   getters: {
     selectedYear: (state) => state.selectedYear,
     selectedStates: (state) => state.selectedStates,
+    brushedStates: (state) => state.brushedStates,
+    scatterPlotHeight: (state) => state.scatterPlotHeight,
     paletteColor: (state) => state.paletteColors.find(d => d.name == state.colorInput).colors,
     stateColorIndexPairs: (state) => state.stateColorIndexPairs,
     colorInput: (state) => state.colorInput,

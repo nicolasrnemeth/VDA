@@ -1,5 +1,5 @@
 <template>
-  <div class="vis-component" ref="chart">
+  <div class="vis-component" id="scatterPlot" ref="chart">
     <svg class="main-svg" :width="svgWidth" :height="svgHeight" ref="mainSvg">
       <g class="chart-group" ref="chartGroup">
         <g class="bivariate-palette" ref="bivariatePalette"></g>
@@ -21,11 +21,12 @@ export default {
   },
   data() {
     return {
+      brushExtent: null,
       svgWidth: 500,
       svgHeight: 500,
       mounted: false,
       svgPadding: {
-        top: 30, right: 40, bottom: 50, left: 40,
+        top: 40, right: 50, bottom: 60, left: 50,
       },
     }
   },
@@ -40,6 +41,7 @@ export default {
       if (this.$refs.chart) {
         this.svgWidth = this.$refs.chart.clientWidth;
         this.svgHeight = this.svgWidth;
+        this.$store.commit('changeScatterPlotHeight', this.svgHeight);
       }
       d3.select(this.$refs.chartGroup)
         .attr("transform", `translate(${this.svgPadding.left}, ${this.svgPadding.top})`);
@@ -50,15 +52,16 @@ export default {
     },
     createXAxis() {
       let XAxis = d3.select(this.$refs.xAxis)
+      let translateXlabel = this.svgWidth - this.svgPadding.left - this.svgPadding.right;
       XAxis.attr('transform', `translate(0, ${this.svgHeight - this.svgPadding.top - this.svgPadding.bottom})`)
            .call(d3.axisBottom(this.xScale).tickFormat(d => d + " %"))
       if (!this.mounted) {
         XAxis.append('text')
-             .attr('x', this.svgWidth - this.svgPadding.left - this.svgPadding.right)
-             .attr('dy', '-.75em')
+             .text("Educational Attainment: Bachelor's Degree or Higher (%)")
+             .attr('x', translateXlabel - 0.85*1e-02*translateXlabel)
+             .attr('y', '-.75em')
              .style('fill', 'black')
              .style('text-anchor', 'end')
-             .text("Educational Attainment: Bachelor's Degree or Higher (%)")
              .style('font-weight', 'bold');
       }
     },
@@ -69,7 +72,8 @@ export default {
         YAxis.append('text')
              .text("Average Yearly Personal Income (in $)")
              .attr('transform', 'rotate(-90)')
-             .attr('dy', '1.5em')
+             .attr('y', '1.5em')
+             .attr('x', '-0.75%')
              .style('text-anchor', 'end')
              .style('fill', 'black')
              .style('font-weight', 'bold');
@@ -89,7 +93,12 @@ export default {
                  .style('stroke', 'black')
                  .style('stroke-width', 1.2)
                  .append('title')
-                 .text(d => d.state);
+                 .text(d => {
+                   return (
+                     //`${d.state}\n\nEducation: ${d.eduRate} %\nIncome: ${d.income} $`
+                     `${d.state}`
+                     );
+                  })
     },
     createPalette() {
       const palette = d3.select(this.$refs.bivariatePalette)
@@ -115,13 +124,31 @@ export default {
                     .extent([[0, 0], 
                              [this.svgWidth - this.svgPadding.left - this.svgPadding.right,
                               this.svgHeight - this.svgPadding.top - this.svgPadding.bottom]])
-                    .on("end", this.catchStates);
+                    .on("start brush", this.handleBrush);
       d3.select(this.$refs.brushArea).attr('class', 'brush').call(brush);
     },
-    // catchStates(event) {
-    //   let extent = event.selection;
-
-    // },
+    handleBrush(event) {
+      let extent = event.selection;
+      this.brushExtent = extent;
+      this.updateBrush(extent);
+    },
+    updateBrush(extent) {
+      if (extent) {
+        d3.selectAll('.points')
+          .classed('selected', d => this.isBrushed(extent, d.eduRate, d.income))
+          //.call(d => this.changeBrushedState(d.state));
+      }
+    },
+    changeBrushedState(state) {
+      this.$store.commit("changeBrushedState", state.replaceAll(" ", "")+"_path");
+    },
+    isBrushed(brushCoors, x, y) {
+      let xRange = this.xScale(x); 
+      let yRange = this.yScale(y);
+      let left = brushCoors[0][0], right = brushCoors[1][0], 
+          bottom = brushCoors[0][1], top = brushCoors[1][1];
+      return (left <= xRange && xRange <= right && bottom <= yRange && yRange <= top); 
+    },
     roundUpToMultipleOfX(value, x, factor=1.05) {
       return Math.ceil( (factor * value) / x) * x;
     },
@@ -190,7 +217,7 @@ export default {
           return {
             state: obj.state, 
             income: +obj.value,
-            eduRate : this.educationRates.find(d => d.state == obj.state).value,
+            eduRate: this.educationRates.find(d => d.state == obj.state).value,
           }
         });
       },
@@ -238,6 +265,11 @@ export default {
       handler() {
         this.createChart();
         this.updateStateColorIndexPairs();
+        if (this.extent) this.updateBrush();
+        this.updateBrush(this.brushExtent);
+        if (this.selectedStates.length > 0) {
+          this.highlightSelectedStates();
+        }
       },
       deep: true,
     },
@@ -249,10 +281,10 @@ export default {
     },
     selectedStates: {
       handler() {
-        if (this.selectedStates.length == 0) {
-          this.removeHightlighting();
-        } else {
+        if (this.selectedStates.length > 0) {
           this.highlightSelectedStates();
+        } else {
+          this.removeHightlighting();
         }
       },
       deep: true,
