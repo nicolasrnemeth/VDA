@@ -78,6 +78,13 @@ export default {
     handleEmptyAreaClick() {
       this.$store.commit("clearSelectedState");
     },
+    updateBrushHighlight() {
+      d3.selectAll('.paths').style("fill", "black").style("fill-opacity", 0.75);
+      for (let stateId of this.brushedStates) {
+        d3.select('#'+stateId)
+          .style("fill", this.paletteColor[this.stateColorIndexPairs.find(d => d.id == stateId).colorIndex]);
+      }
+    },
   },
   computed: {
     brushedStates: {
@@ -104,23 +111,21 @@ export default {
       get() {
         return this.$store.getters.paletteColor;
       }
+    },
+    watch_paletteColor_stateColorIndexPairs_brushedStates: {
+      get() {
+        return `${this.paletteColor},${this.stateColorIndexPairs},${this.brushedStates}`;
+      }
     }
   },
   watch: {
-    stateColorIndexPairs: {
+    watch_paletteColor_stateColorIndexPairs_brushedStates: {
       handler() {
-        this.updateColor();
-      },
-    },
-    paletteColor: {
-      handler() {
-        this.updateColor();
-      },
-      deep: true,
-    },
-    brushedStates: {
-      handler() {
-        console.log(this.brushedStates);
+        if(this.brushedStates.length > 0) {
+          this.updateBrushHighlight();
+        } else {
+          this.updateColor();
+        }
       },
       deep: true,
     }
