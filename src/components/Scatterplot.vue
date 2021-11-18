@@ -81,7 +81,6 @@ export default {
     },
     createPoints() {
       const pointsGroup = d3.select(this.$refs.pointsGroup)
-      console.log(this.allData);
       pointsGroup.selectAll('.points')
                  .data(this.allData)
                  .join('circle')
