@@ -94,9 +94,10 @@ export default {
     createPalette() {
       const palette = d3.select(this.$refs.bivariatePalette)
       palette.selectAll('.palette-rect')
-             .data(this.paletteColors)
+             .data(this.paletteColor)
              .join('rect')
              .attr('class', 'palette-rect')
+             .attr('id', (d,i) => "rect_"+i)
              .attr('width', this.paletteRect.width)
              .attr('height', this.paletteRect.height)
              .attr('x',  (d,i) => (i%3)*this.paletteRect.width)
@@ -127,13 +128,10 @@ export default {
     roundDownToMultipleOfX(value, x, factor=0.95) {
       return Math.floor( (factor * value) / x) * x;
     },
-    colorIndex(x, y, stateid) {
+    colorIndex(x, y) {
       let xRange = this.xScale(x);
       let yRange = (this.svgHeight - this.svgPadding.top 
                     - this.svgPadding.bottom - this.yScale(y));
-      console.log(stateid);
-      console.log("xRange= ", xRange);
-      console.log("yRange= ", yRange);
       return Math.floor(yRange / this.paletteRect.height) * 3 
              + Math.floor(xRange / this.paletteRect.width);
     },
@@ -143,15 +141,26 @@ export default {
       for (let datum of this.allData) {
         this.setStateColorIndexPairs({
           id: datum.state.replaceAll(" ", "")+"_path",
-          colorIndex: this.colorIndex(datum.eduRate, datum.income, datum.state),
+          colorIndex: this.colorIndex(datum.eduRate, datum.income),
         })
       }
     },
     setStateColorIndexPairs(obj) {
         this.$store.commit('changeStateColorIndexPairs', obj);
-    },  
+    },
+    updateColor() {
+      for (let idx in this.paletteColor) {
+        d3.select("#rect_"+idx)
+          .style("fill", this.paletteColor[idx]);
+      }
+    }
   },
   computed: {
+    paletteColor: {
+      get() {
+        return this.$store.getters.paletteColor;
+      }
+    },
     educationRates: {
       get() {
         return this.$store.getters.educationRates;
@@ -179,11 +188,6 @@ export default {
           width: ((this.svgWidth - this.svgPadding.left - this.svgPadding.right) / 3), 
           height: ((this.svgHeight - this.svgPadding.top - this.svgPadding.bottom) / 3),
         }
-      }
-    },
-    paletteColors: {
-      get() {
-        return this.$store.getters.selectedPalette;
       }
     },
     dataMax_income() {
@@ -219,6 +223,12 @@ export default {
       },
       deep: true,
     },
+    paletteColor: {
+      handler() {
+        this.updateColor();
+      },
+      deep: true,
+    }
   },
 }
 </script>

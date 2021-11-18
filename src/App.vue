@@ -7,15 +7,13 @@
         </div>
       </div>
       <div id="color-selection" ref="colorSelection">
-        <form action="/action_page.php">
-          <label for="colorInput">Color scheme: </label>
-          <span id="spacing">____</span>
-          <select name="palette" id="colorInput">
-            <option value="redBlue">RedBlue</option>
-            <option value="greenBlue">GreenBlue</option>
-            <option value="bluePurple">BluePurple</option>
-          </select>
-        </form>
+        <label for="colorInput">Color scheme: </label>
+        <span id="spacing">____</span>
+        <select name="palette" id="colorInput">
+            <option>RedBlue</option>
+            <option>GreenBlue</option>
+            <option>BluePurple</option>
+        </select>
       </div>
       <div class="row" id="chartsRow">
         <div class="col-md-5">
@@ -30,6 +28,8 @@
 </template>
 
 <script>
+import * as d3 from 'd3';
+
 import ChoroplethMap from './components/ChoroplethMap.vue';
 import Scatterplot from './components/Scatterplot.vue';
 import YearSlider from './components/YearSlider.vue';
@@ -41,7 +41,16 @@ export default {
   },
   mounted() {
     this.$store.dispatch('loadData');
+    this.listenColorInput();
   },
+  methods: {
+    listenColorInput() {
+      d3.select('#colorInput').on('change', this.handleColorInput);
+    },
+    handleColorInput(event) {
+      this.$store.commit('changeColorInput', event.target.value);
+    }
+  }
 }
 </script>
 

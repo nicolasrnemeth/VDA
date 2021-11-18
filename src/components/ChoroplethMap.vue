@@ -47,16 +47,21 @@ export default {
             .append('title')
             .text(d => d.properties.name);
       
-      this.colorStates();
+      this.updateColor();
     },
-    colorStates() {
+    updateColor() {
       for (let state of this.stateColorIndexPairs) {
         d3.select("#"+state.id)
-          .style("fill", this.selectedPalette[state.colorIndex]);
+          .style("fill", this.paletteColor[state.colorIndex]);
       }
-    }
+    },
   },
   computed: {
+    colorInput: {
+      get() {
+        return this.$store.colorInput;
+      }
+    },
     educationRates: {
       get() {
         return this.$store.getters.educationRates;
@@ -77,17 +82,23 @@ export default {
         return this.$store.getters.stateColorIndexPairs;
       }
     },
-    selectedPalette: {
+    paletteColor: {
       get() {
-        return this.$store.getters.selectedPalette;
+        return this.$store.getters.paletteColor;
       }
     }
   },
   watch: {
     stateColorIndexPairs: {
       handler() {
-        this.colorStates();
+        this.updateColor();
       },
+    },
+    paletteColor: {
+      handler() {
+        this.updateColor();
+      },
+      deep: true,
     },
   },
 }
