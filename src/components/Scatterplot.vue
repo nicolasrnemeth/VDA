@@ -81,6 +81,7 @@ export default {
     },
     createPoints() {
       const pointsGroup = d3.select(this.$refs.pointsGroup)
+      console.log(this.allData);
       pointsGroup.selectAll('.points')
                  .data(this.allData)
                  .join('circle')
@@ -92,13 +93,15 @@ export default {
                  .style('fill-opacity', 0)
                  .style('stroke', 'black')
                  .style('stroke-width', 1.2)
-                 .append('title')
-                 .text(d => {
-                   return (
-                     //`${d.state}\n\nEducation: ${d.eduRate} %\nIncome: ${d.income} $`
-                     `${d.state}`
-                     );
-                  })
+      
+      d3.selectAll('title').remove();
+      d3.selectAll('.points')
+        .append('title')
+        .text(d => {
+              return (
+                `${d.state}\n\nEducation: ${d.eduRate} %\nIncome: ${d.income} $`
+              );
+        });
     },
     createPalette() {
       const palette = d3.select(this.$refs.bivariatePalette)
@@ -269,7 +272,7 @@ export default {
       handler() {
         this.createChart();
         this.updateStateColorIndexPairs();
-        if (this.extent) this.updateBrush(this.brushExtent);
+        if (this.brushExtent) this.updateBrush(this.brushExtent);
         if (this.selectedStates.length > 0) {
           this.highlightSelectedStates();
         }
