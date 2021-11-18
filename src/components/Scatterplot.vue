@@ -153,7 +153,20 @@ export default {
         d3.select("#rect_"+idx)
           .style("fill", this.paletteColor[idx]);
       }
-    }
+    },
+    highlightSelectedStates() {
+      for (let id of this.selectedStates) {
+        d3.select('#'+id+"_point")
+          .style('stroke-width', 3)
+          .style('fill-opacity', 1)
+          .style('fill', "yellow");
+      }
+    },
+    removeHightlighting() {
+      d3.selectAll('.points')
+        .style("stroke-width", 1.2)
+        .style('fill-opacity', 0);
+    },
   },
   computed: {
     paletteColor: {
@@ -188,6 +201,11 @@ export default {
           width: ((this.svgWidth - this.svgPadding.left - this.svgPadding.right) / 3), 
           height: ((this.svgHeight - this.svgPadding.top - this.svgPadding.bottom) / 3),
         }
+      }
+    },
+    selectedStates: {
+      get() {
+        return this.$store.getters.selectedStates;
       }
     },
     dataMax_income() {
@@ -228,7 +246,17 @@ export default {
         this.updateColor();
       },
       deep: true,
-    }
+    },
+    selectedStates: {
+      handler() {
+        if (this.selectedStates.length == 0) {
+          this.removeHightlighting();
+        } else {
+          this.highlightSelectedStates();
+        }
+      },
+      deep: true,
+    },
   },
 }
 </script>

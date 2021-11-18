@@ -40,11 +40,16 @@ const store = new Vuex.Store({
     colorInput: "RedBlue",
   },
   mutations: {
-    changeSelectedYear (state, year) {
+    changeSelectedYear(state, year) {
       state.selectedYear = year;
     },
     changeSelectedState(state, val) {
-      state.selectedStates.push(val);
+      if (!(state.selectedStates.includes(val))) {
+        state.selectedStates.push(val);
+      }
+    },
+    clearSelectedState(state) {
+      state.selectedStates = [];
     },
     changeStateColorIndexPairs(state, obj) {
       state.stateColorIndexPairs.push(obj);

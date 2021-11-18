@@ -58,8 +58,8 @@ export default {
 #appTitle {
   text-align: center;
   text-anchor: middle;
-  font-family: Baskerville;
-  font-size: 39px;
+  font-weight: normal;
+  font-size: 37px;
 }
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
@@ -78,10 +78,13 @@ export default {
   transform: translate(40px, 30px);
   margin-bottom: 25px;
 }
-#chartsRow {
-  transform: translate(0px, 0px);
+#choropleth-map {
+  transform: translate(0px,-10px);
 }
-#choroplethMap {
-  transform: translate(0px, -20px);
+#empty-area{
+  transform: translate(0px, 31px);
+  stroke: black;
+  stroke-width: 0.25;
+  fill: rgba(250, 250, 250, 0.75);
 }
 </style>
