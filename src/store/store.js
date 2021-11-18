@@ -54,7 +54,7 @@ const store = new Vuex.Store({
       }
     },
     changeBrushedState(state, val) {
-      state.brushedStates.push(val);
+      state.brushedStates = val;
     },
     clearSelectedState(state) {
       state.selectedStates = [];

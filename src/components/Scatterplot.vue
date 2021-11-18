@@ -133,19 +133,23 @@ export default {
       this.updateBrush(extent);
     },
     updateBrush(extent) {
-      if (extent) {
         d3.selectAll('.points')
           .classed('selected', d => this.isBrushed(extent, d.eduRate, d.income))
-          //.call(d => this.changeBrushedState(d.state));
-      }
+        
+        let selectedElements = document.getElementsByClassName("selected");
+        let selectedIds = [];
+        for (let i=0; i < selectedElements.length; i++) {
+          selectedIds.push(selectedElements[i].getAttribute("id").replace("_point", "_path"));
+        }
+        this.changeBrushedState(selectedIds);
     },
-    changeBrushedState(state) {
-      this.$store.commit("changeBrushedState", state.replaceAll(" ", "")+"_path");
+    changeBrushedState(selectedStateIds) {
+      this.$store.commit("changeBrushedState", selectedStateIds);
     },
     isBrushed(brushCoors, x, y) {
       let xRange = this.xScale(x); 
       let yRange = this.yScale(y);
-      let left = brushCoors[0][0], right = brushCoors[1][0], 
+      let left = brushCoors[0][0], right = brushCoors[1][0],
           bottom = brushCoors[0][1], top = brushCoors[1][1];
       return (left <= xRange && xRange <= right && bottom <= yRange && yRange <= top); 
     },
@@ -265,8 +269,7 @@ export default {
       handler() {
         this.createChart();
         this.updateStateColorIndexPairs();
-        if (this.extent) this.updateBrush();
-        this.updateBrush(this.brushExtent);
+        if (this.extent) this.updateBrush(this.brushExtent);
         if (this.selectedStates.length > 0) {
           this.highlightSelectedStates();
         }

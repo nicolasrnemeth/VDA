@@ -96,7 +96,7 @@ export default {
 .year-slider {
   font-size: 22px;
 }
-.selected {
+.selected.points {
   fill: red !important;
   fill-opacity: 1 !important;
 }

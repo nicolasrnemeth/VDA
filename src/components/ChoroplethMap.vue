@@ -120,7 +120,7 @@ export default {
     },
     brushedStates: {
       handler() {
-        this.handleBrushEvent();
+        console.log(this.brushedStates);
       },
       deep: true,
     }
