@@ -82,25 +82,16 @@ const store = new Vuex.Store({
     paletteColor: (state) => state.paletteColors.find(d => d.name == state.colorInput).colors,
     stateColorIndexPairs: (state) => state.stateColorIndexPairs,
     colorInput: (state) => state.colorInput,
-    educationRates (state) {
+    allData (state) {
       let result = [];
-      for (let i = 0; i < state.educationRates.length; i++) {
-        if (state.selectedYear in state.educationRates[i]) {
+      for (let i = 0; i < state.personalIncome.length && i < state.educationRates.length; i++) {
+        if (state.selectedYear in state.personalIncome[i]
+            && state.selectedYear in state.educationRates[i]) {
+          let State = state.educationRates[i].State;
           result.push({
-            state: state.educationRates[i].State,
-            value: +state.educationRates[i][state.selectedYear]
-          })
-        }
-      }
-      return result;
-    },
-    personalIncome (state) {
-      let result = [];
-      for (let i = 0; i < state.personalIncome.length; i++) {
-        if (state.selectedYear in state.personalIncome[i]) {
-          result.push({
-            state: state.personalIncome[i].State,
-            value: +state.personalIncome[i][state.selectedYear]
+            state: State,
+            eduRate: +state.educationRates[i][state.selectedYear],
+            income: +state.personalIncome.find(d => d.State == State)[state.selectedYear],
           })
         }
       }

@@ -215,13 +215,7 @@ export default {
     },
     allData: {
       get() {
-        return this.$store.getters.personalIncome.map(obj => {
-          return {
-            state: obj.state, 
-            income: +obj.value,
-            eduRate: this.$store.getters.educationRates.find(d => d.state == obj.state).value,
-          }
-        });
+        return this.$store.getters.allData;
       },
     },
     paletteRect: {
