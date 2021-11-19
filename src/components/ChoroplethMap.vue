@@ -52,6 +52,7 @@ export default {
             .style('stroke', 'black')
             .style('cursor', 'pointer')
             .append('title')
+            .attr('class', 'tooltip-map')
             .text(d => "hightlight " + d.properties.name);
       
       this.updateColor();
@@ -73,6 +74,7 @@ export default {
                .on("click", this.handleEmptyAreaClick)
                .style('cursor', "pointer")
                .append('title')
+               .attr('class', 'tooltip-map')
                .text("undo highlighting");
     },
     handleEmptyAreaClick() {

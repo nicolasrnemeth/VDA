@@ -24,7 +24,6 @@ export default {
       brushExtent: null,
       svgWidth: 500,
       svgHeight: 500,
-      mounted: false,
       svgPadding: {
         top: 40, right: 50, bottom: 60, left: 50,
       },
@@ -32,9 +31,9 @@ export default {
   },
   mounted() {
     this.createChart();
-    this.updateStateColorIndexPairs();
     this.createBrush();
-    this.mounted = true;
+    this.creatAxesLabels();
+    this.updateStateColorIndexPairs();
   },
   methods: {
     createChart() {
@@ -52,32 +51,33 @@ export default {
     },
     createXAxis() {
       let XAxis = d3.select(this.$refs.xAxis)
-      let translateXlabel = this.svgWidth - this.svgPadding.left - this.svgPadding.right;
       XAxis.attr('transform', `translate(0, ${this.svgHeight - this.svgPadding.top - this.svgPadding.bottom})`)
-           .call(d3.axisBottom(this.xScale).tickFormat(d => d + " %"))
-      if (!this.mounted) {
-        XAxis.append('text')
-             .text("Educational Attainment: Bachelor's Degree or Higher (%)")
-             .attr('x', translateXlabel - 0.85*1e-02*translateXlabel)
-             .attr('y', '-.75em')
-             .style('fill', 'black')
-             .style('text-anchor', 'end')
-             .style('font-weight', 'bold');
-      }
+           .call(d3.axisBottom(this.xScale).tickFormat(d => d + " %"));
     },
     createYAxis() {
       let YAxis = d3.select(this.$refs.yAxis)
       YAxis.call(d3.axisLeft(this.yScale).tickFormat(d => (d3.format(".1f")(d/1e03) + " k")))
-      if (!this.mounted) {
-        YAxis.append('text')
-             .text("Average Yearly Personal Income (in $)")
-             .attr('transform', 'rotate(-90)')
-             .attr('y', '1.5em')
-             .attr('x', '-0.75%')
-             .style('text-anchor', 'end')
-             .style('fill', 'black')
-             .style('font-weight', 'bold');
-      }
+    },
+    creatAxesLabels() {
+      d3.select(this.$refs.yAxis)
+        .append('text')
+        .text("Average Yearly Personal Income (in $)")
+        .attr('transform', 'rotate(-90)')
+        .attr('y', '1.5em')
+        .attr('x', '-0.75%')
+        .style('text-anchor', 'end')
+        .style('fill', 'black')
+        .style('font-weight', 'bold');
+      
+      let translateXlabel = this.svgWidth - this.svgPadding.left - this.svgPadding.right;
+      d3.select(this.$refs.xAxis)
+        .append('text')
+        .text("Educational Attainment: Bachelor's Degree or Higher (%)")
+        .attr('x', translateXlabel - 0.85*1e-02*translateXlabel)
+        .attr('y', '-.75em')
+        .style('fill', 'black')
+        .style('text-anchor', 'end')
+        .style('font-weight', 'bold');
     },
     createPoints() {
       const pointsGroup = d3.select(this.$refs.pointsGroup)
@@ -91,9 +91,9 @@ export default {
                  .attr('r', 5)
                  .style('fill-opacity', 0)
                  .style('stroke', 'black')
-                 .style('stroke-width', 1.2)
+                 .style('stroke-width', 1.2);
       
-      d3.selectAll('.points.title').remove();
+      d3.selectAll('title:not(.tooltip-map)').remove();
       d3.selectAll('.points')
         .append('title')
         .text(d => {
@@ -242,16 +242,16 @@ export default {
       }
     },
     dataMax_income() {
-      return d3.max(this.personalIncome, d => d.value)
+      return d3.max(this.personalIncome, d => d.value);
     },
     dataMin_income() {
-      return d3.min(this.personalIncome, d => d.value)
+      return d3.min(this.personalIncome, d => d.value);
     },
     dataMax_eduRate() {
-      return d3.max(this.educationRates, d => d.value)
+      return d3.max(this.educationRates, d => d.value);
     },
     dataMin_eduRate() {
-      return d3.min(this.educationRates, d => d.value)
+      return d3.min(this.educationRates, d => d.value);
     },
     xScale() {
       return d3.scaleLinear()
