@@ -8,6 +8,7 @@ const store = new Vuex.Store({
   state: {
     selectedYear: 2006,
     scatterPlotHeight: 570,
+    scatterPlotIsBrushed: false,
     selectedStates: [],
     brushedStates: [],
     educationRates: [],
@@ -42,6 +43,9 @@ const store = new Vuex.Store({
     colorInput: "RedBlue",
   },
   mutations: {
+    changeScatterPlotIsBrushed(state, val) {
+      state.scatterPlotIsBrushed = val;
+    }, 
     changeScatterPlotHeight(state, height) {
       state.scatterPlotHeight = height;
     },
@@ -74,6 +78,7 @@ const store = new Vuex.Store({
     selectedStates: (state) => state.selectedStates,
     brushedStates: (state) => state.brushedStates,
     scatterPlotHeight: (state) => state.scatterPlotHeight,
+    scatterPlotIsBrushed: (state) => state.scatterPlotIsBrushed,
     paletteColor: (state) => state.paletteColors.find(d => d.name == state.colorInput).colors,
     stateColorIndexPairs: (state) => state.stateColorIndexPairs,
     colorInput: (state) => state.colorInput,

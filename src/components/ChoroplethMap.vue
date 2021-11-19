@@ -114,22 +114,32 @@ export default {
         return this.$store.getters.paletteColor;
       }
     },
-    watch_paletteColor_stateColorIndexPairs_brushedStates: {
+    scatterPlotIsBrushed: {
       get() {
-        return `${this.paletteColor},${this.stateColorIndexPairs},${this.brushedStates}`;
+        return this.$store.getters.scatterPlotIsBrushed;
+      }
+    },
+    paletteColor_stateColorIndexPairs_brushedStates: {
+      get() {
+        return `${this.paletteColor},${this.stateColorIndexPairs},${this.brushedStates},${this.scatterPlotIsBrushed}`;
       }
     }
   },
   watch: {
-    watch_paletteColor_stateColorIndexPairs_brushedStates: {
+    paletteColor_stateColorIndexPairs_brushedStates: {
       handler() {
         if(this.brushedStates.length > 0) {
           this.updateBrushHighlight();
         } else {
-          this.updateColor();
+          if(this.scatterPlotIsBrushed) {
+            d3.selectAll('.paths').style("fill", "black").style("fill-opacity", 0.75);
+          } else {
+              this.updateColor();
+            }
         }
       },
       deep: true,
+      immediate: true,
     }
   },
 }

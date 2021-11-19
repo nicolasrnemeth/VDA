@@ -126,13 +126,19 @@ export default {
                     .extent([[0, 0], 
                              [this.svgWidth - this.svgPadding.left - this.svgPadding.right,
                               this.svgHeight - this.svgPadding.top - this.svgPadding.bottom]])
-                    .on("start brush", this.handleBrush);
+                    .on("start brush end", this.handleBrush);
       d3.select(this.$refs.brushArea).attr('class', 'brush').call(brush);
     },
     handleBrush(event) {
       let extent = event.selection;
       this.brushExtent = extent;
-      this.updateBrush(extent);
+      if (extent != undefined) this.updateBrush(extent);
+      if (extent && ((extent[0][0] - extent[1][0]) != 0 && (extent[1][0] - extent[1][1]))) {
+        this.$store.commit('changeScatterPlotIsBrushed', true);
+      }
+      else {
+        this.$store.commit('changeScatterPlotIsBrushed', false);
+      }
     },
     updateBrush(extent) {
         d3.selectAll('.points')
@@ -274,6 +280,7 @@ export default {
         this.updateColor();
       },
       deep: true,
+      immediate: true,
     },
     selectedStates: {
       handler() {
@@ -284,6 +291,7 @@ export default {
         }
       },
       deep: true,
+      immediate: true,
     },
   },
 }
