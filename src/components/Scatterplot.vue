@@ -30,6 +30,11 @@ export default {
     }
   },
   mounted() {
+    if (this.$refs.chart) {
+        this.svgWidth = this.$refs.chart.clientWidth;
+        this.svgHeight = this.svgWidth;
+        this.$store.commit('changeScatterPlotHeight', this.svgHeight);
+    }
     this.createChart();
     this.createBrush();
     this.creatAxesLabels();
@@ -37,11 +42,6 @@ export default {
   },
   methods: {
     createChart() {
-      if (this.$refs.chart) {
-        this.svgWidth = this.$refs.chart.clientWidth;
-        this.svgHeight = this.svgWidth;
-        this.$store.commit('changeScatterPlotHeight', this.svgHeight);
-      }
       d3.select(this.$refs.chartGroup)
         .attr("transform", `translate(${this.svgPadding.left}, ${this.svgPadding.top})`);
       this.createXAxis();
@@ -73,7 +73,7 @@ export default {
       d3.select(this.$refs.xAxis)
         .append('text')
         .text("Educational Attainment: Bachelor's Degree or Higher (%)")
-        .attr('x', translateXlabel - 0.85*1e-02*translateXlabel)
+        .attr('x', translateXlabel - 0.75*1e-02*translateXlabel)
         .attr('y', '-.75em')
         .style('fill', 'black')
         .style('text-anchor', 'end')
@@ -207,23 +207,13 @@ export default {
         return this.$store.getters.paletteColor;
       }
     },
-    educationRates: {
-      get() {
-        return this.$store.getters.educationRates;
-      }
-    },
-    personalIncome: {
-      get() {
-        return this.$store.getters.personalIncome;
-      }
-    },
     allData: {
       get() {
-        return this.personalIncome.map(obj => {
+        return this.$store.getters.personalIncome.map(obj => {
           return {
             state: obj.state, 
             income: +obj.value,
-            eduRate: this.educationRates.find(d => d.state == obj.state).value,
+            eduRate: this.$store.getters.educationRates.find(d => d.state == obj.state).value,
           }
         });
       },
@@ -242,16 +232,16 @@ export default {
       }
     },
     dataMax_income() {
-      return d3.max(this.personalIncome, d => d.value);
+      return d3.max(this.allData, d => d.income);
     },
     dataMin_income() {
-      return d3.min(this.personalIncome, d => d.value);
+      return d3.min(this.allData, d => d.income);
     },
     dataMax_eduRate() {
-      return d3.max(this.educationRates, d => d.value);
+      return d3.max(this.allData, d => d.eduRate);
     },
     dataMin_eduRate() {
-      return d3.min(this.educationRates, d => d.value);
+      return d3.min(this.allData, d => d.eduRate);
     },
     xScale() {
       return d3.scaleLinear()
@@ -277,6 +267,7 @@ export default {
         }
       },
       deep: true,
+      immediate: true,
     },
     paletteColor: {
       handler() {
