@@ -93,7 +93,7 @@ export default {
                  .style('stroke', 'black')
                  .style('stroke-width', 1.2)
       
-      d3.selectAll('title').remove();
+      d3.selectAll('.points.title').remove();
       d3.selectAll('.points')
         .append('title')
         .text(d => {
