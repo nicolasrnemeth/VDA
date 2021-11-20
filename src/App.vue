@@ -7,13 +7,22 @@
         </div>
       </div>
       <div id="color-selection" ref="colorSelection">
+        <!-- Dropdown selection of bivariate color scheme -->
         <label for="colorInput">Color scheme: </label>
-        <span id="spacing">___</span>
+        <span class="spacing_">___</span>
         <select name="palette" id="colorInput">
             <option>RedBlue</option>
+            <option>RedBlueIntensive</option>
             <option>GreenBlue</option>
             <option>BluePurple</option>
+            <option>PurpleYellow</option>
         </select>
+        <!-- Checkbox selection of whether to saturate color or not -->
+        <label class="switch">
+          Increase color saturation:
+          <span class="spacing_">_</span>
+          <input type="checkbox" id="saturateInput">
+        </label>
       </div>
       <div class="row" id="chartsRow">
         <div class="col-md-5">
@@ -42,15 +51,24 @@ export default {
   mounted() {
     this.$store.dispatch('loadData');
     this.listenColorInput();
+    this.listenSaturateInput();
   },
   methods: {
+    // Listen to selection of bivariate color scheme
     listenColorInput() {
       d3.select('#colorInput').on('change', this.handleColorInput);
     },
     handleColorInput(event) {
       this.$store.commit('changeColorInput', event.target.value);
-    }
-  }
+    },
+    // Listen whether to increase color saturation or not
+    listenSaturateInput() {
+      d3.select('#saturateInput').on('change', this.handleSaturateInput);
+    },
+    handleSaturateInput(event) {
+      this.$store.commit('changeSaturateColor', event.target.checked);
+    },
+  },
 }
 </script>
 
@@ -73,12 +91,12 @@ export default {
   padding-left: 35px;
   padding-right: 35px;
 }
-#spacing {
+.spacing_ {
   color: white;
 }
 #color-selection {
   text-align: start;
-  transform: translate(50px, 85%);
+  transform: translate(70px, 90%);
   margin-bottom: 25px;
   font-size: 18px;
 }
@@ -86,9 +104,7 @@ export default {
   transform: translate(0px,-10px);
 }
 #empty-area{
-  stroke: black;
-  stroke-width: 0.25;
-  fill: rgba(250, 250, 250, 0.75);
+  fill: rgb(250, 250, 250);
 }
 .axis {
   font-size: 12px;
@@ -97,7 +113,11 @@ export default {
   font-size: 22px;
 }
 .selected.points {
-  fill: red !important;
+  fill: white !important;
+  stroke-width: 1.75 !important;
   fill-opacity: 1 !important;
+}
+.switch {
+  transform: translate(36vw, 0px);
 }
 </style>

@@ -37,10 +37,27 @@ const store = new Vuex.Store({
           "#dfb0d6", "#a5add3", "#5698b9", 
           "#be64ac", "#8c62aa", "#3b4994"
         ]
+      },
+      {
+        name: "PurpleYellow",
+        colors: [
+          "#e8e8e8", "#e4d9ac", "#c8b35a",
+          "#cbb8d7", "#c8ada0", "#af8e53",
+          "#9972af", "#976b82", "#804d36"
+        ]
+      },
+      {
+        name: "RedBlueIntensive",
+        colors: [
+          "#e8e8e8", "#7bb3d1", "#016eae",
+          "#dd7c8a", "#8d6c8f", "#4a4779",
+          "#cc0024", "#8a274a", "#4b264d"
+        ]
       }
     ],
     stateColorIndexPairs: [],
     colorInput: "RedBlue",
+    saturateColor: false,
   },
   mutations: {
     changeScatterPlotIsBrushed(state, val) {
@@ -56,6 +73,9 @@ const store = new Vuex.Store({
       if (!(state.selectedStates.includes(val))) {
         state.selectedStates.push(val);
       }
+    },
+    changeSaturateColor (state, val) {
+      state.saturateColor = val;
     },
     changeBrushedState(state, val) {
       state.brushedStates = val;
@@ -76,11 +96,22 @@ const store = new Vuex.Store({
   getters: {
     selectedYear: (state) => state.selectedYear,
     selectedStates: (state) => state.selectedStates,
+    // all states that are brushed
     brushedStates: (state) => state.brushedStates,
+    // scatterplot height is tracked in vuex store communicate
+    // it to the choroplethMap component, because the scatterplot height
+    // is chosen in accordance with the clientWidth of the div element
+    // the scatterplot svg element is inside of
     scatterPlotHeight: (state) => state.scatterPlotHeight,
+    // boolean value to track checkbox whether to saturate color or not
+    saturateColor: (state) => state.saturateColor,
     scatterPlotIsBrushed: (state) => state.scatterPlotIsBrushed,
+    // return the right bivariate color scheme depending on the selection
+    // in the dropdown menu
     paletteColor: (state) => state.paletteColors.find(d => d.name == state.colorInput).colors,
+    // assign the index of the color in the array that gets assigned to each state
     stateColorIndexPairs: (state) => state.stateColorIndexPairs,
+    // track the color scheme selected in the dropdown selection
     colorInput: (state) => state.colorInput,
     allData (state) {
       let result = [];
