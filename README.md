@@ -1,5 +1,3 @@
-author: Nicolas Nemeth, 01506257
-
 WHICH BIVARIATE COLOR SCHEME I CHOSE AND WHY?
 
 Not only do people have different preferences when it comes to color (e.g. one 
